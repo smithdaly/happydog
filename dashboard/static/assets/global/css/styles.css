@@ -1,0 +1,15 @@
+.dog_table tr td {
+  width: 200px;
+  height: 160px;
+  color: #7c7c7c;
+}
+.dog_table .thead td {
+  background: #eee;
+  font-weight: bold;
+  font-size: 18px;
+  height: 40px;
+}
+.dog_table tr td a {
+  cursor: pointer;
+  text-decoration: none;
+}

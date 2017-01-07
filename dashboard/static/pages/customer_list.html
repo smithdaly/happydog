@@ -1,0 +1,154 @@
+{% extends "static/index.html" %}
+{% load static %}
+{% block content %}
+<div class="row">
+	<div class="col-md-offset-1 col-md-10">
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-gift"></i>Customer Form Sample
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse" data-original-title="" title="">
+					</a>
+					<a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title="">
+					</a>
+					<a href="javascript:;" class="reload" data-original-title="" title="">
+					</a>
+					<a href="javascript:;" class="remove" data-original-title="" title="">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body form">
+				<!-- BEGIN FORM-->
+				<form action="#" class="form-horizontal" method="get">
+					{% csrf_token %}
+					<input type="hidden" name="customer_id" id="customer_id" value="">
+					<div class="form-body">
+						<h3 class="form-section">Search Info</h3>
+						<div class="row">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="control-label col-md-3">Customer Name</label>
+										<div class="col-md-9">
+											<input type="text" class="form-control" placeholder="Please input customer name" name="search_key" value="{{search_key}}">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<button type="button" class="btn green" onclick="search()">Search</button>
+									<button type="button" class="btn green" id="reg_customer" onclick="edit_customer('');">Add Customer</button>
+								</div>
+							</div>
+						</div>
+
+						<h3 class="form-section">Customer List</h3>
+						<div class="row">
+							<div class="col-md-12">
+								<!-- BEGIN SAMPLE TABLE PORTLET-->
+								<div class="portlet light">
+									<div class="portlet-title">
+										<div class="caption">
+											<i class="fa fa-cogs font-green-sharp"></i>
+											<span class="caption-subject font-green-sharp bold uppercase">Customer</span>
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse" data-original-title="" title="">
+											</a>
+											<a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title="">
+											</a>
+											<a href="javascript:;" class="reload" data-original-title="" title="">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="table-scrollable">
+											<table class="table table-striped table-bordered table-advance table-hover">
+											<thead>
+											<tr>
+												
+												<th class="hidden-xs">
+													<i class="fa fa-user"></i> Name
+												</th>
+												<th>
+													<i class="fa fa-home"></i> Address
+												</th>
+												<th>
+													<i class="fa fa-phone"></i> Phone
+												</th>
+													
+												<th width="50">
+													<i class="fa fa-pencil-square-o"></i> Edit
+												</th>
+												<th width="50">
+													<i class="fa fa-trash-o"></i> Delete
+												</th>
+											</tr>
+											</thead>
+											<tbody>
+											{% if customer_list %}
+											{% for customer in customer_list %}
+							                <tr>
+												
+												<td class="hidden-xs">
+													 {{customer.customer_name}}
+												</td>
+												<td>
+													 {{customer.address}}
+												</td>
+												<td>
+													 {{customer.phone}}
+												</td>
+												
+												<td>
+													<a href="javascript:edit_customer('{{customer.id}}')" class="btn default btn-xs purple">
+													<i class="fa fa-edit"></i>Edit </a>
+												</td>
+												<td>
+													<a href="{% url 'customer_delete' customer.id %}" class="btn default btn-xs black">
+													<i class="fa fa-trash-o"></i> Delete </a>
+												</td>
+											</tr>
+							                {% endfor %}
+							                {% endif %}
+											</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<!-- END SAMPLE TABLE PORTLET-->
+							</div>
+						</div>	
+						
+					</div>
+				</form>
+				<!-- END FORM-->
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block custom_js %}
+<script>
+	var edit_customer = function(customer_id)
+	{
+
+		if(customer_id != "")
+			$("#customer_id").val(customer_id);
+		
+		// alert(customer_id);
+		$('form').attr("action", "{% url 'customer_save' %}");
+		$('form').submit();
+	}
+
+	var search = function()
+	{
+		$('form').attr("action", "{% url 'customer.index' %}");
+		$('form').attr("method", "POST");
+		$('form').submit();
+	}
+
+</script>
+
+{% endblock %}

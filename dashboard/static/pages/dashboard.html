@@ -1,0 +1,183 @@
+{% extends "static/index.html" %}
+{% load static %}
+{% block content %}
+<!-- <link href="{% static 'assets/global/plugins/fullcalendar/fullcalendar.min.css' %}" rel="stylesheet"/> -->
+<link href="{% static 'assets/global/plugins/bootstrap-datepicker/css/datepicker3.css' %}" rel="stylesheet"/>
+<div class="row">
+	<div class="col-md-offset-1 col-md-10">
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-gift"></i>Happy Dogs
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse" data-original-title="" title="">
+					</a>
+					<a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title="">
+					</a>
+					<a href="javascript:;" class="reload" data-original-title="" title="">
+					</a>
+					<a href="javascript:;" class="remove" data-original-title="" title="">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body form">
+				<!-- BEGIN FORM-->
+				<form action="#" class="form-horizontal" method="get">
+					{% csrf_token %}
+					<input type="hidden" name="venu_id" id="venu_id" value="">
+					<div class="form-body">
+						<h3 class="form-section">Search Info</h3>
+						<div class="row">
+							<div class="row">
+								<div class="col-md-5">
+									<div class="form-group">
+										<label class="control-label col-md-3">Start Date</label>
+										<div class="col-md-4">
+											<input type="text" class="form-control form-control-inline date-picker input-xlarge" id="search_key1" placeholder="Please input start date" name="search_key1" value="{{search_key1}}">
+											<!-- <input class="form-control form-control-inline date-picker input-xlarge" id="start_date" name="start_date" type="text" value="{{dog.start_date}}" placeholder=""> -->
+										</div>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<div class="form-group">
+										<label class="control-label col-md-3">End Date</label>
+										<div class="col-md-4">
+											<input type="text" class="form-control form-control-inline date-picker input-xlarge" placeholder="Please input end date" id="search_key2" name="search_key2" value="{{search_key2}}">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<button type="button" class="btn green" onclick="search()">Search</button>
+									<!-- <button type="button" class="btn green" id="reg_venu" onclick="edit_venu('');">Add Venu</button> -->
+								</div>
+							</div>
+						</div>
+
+						<h3 class="form-section">Dogs List</h3>
+						<div class="row">
+							<div class="col-md-12">
+								<!-- BEGIN SAMPLE TABLE PORTLET-->
+								<div class="portlet light">
+									<div class="portlet-title">
+										<div class="caption">
+											<i class="fa fa-cogs font-green-sharp"></i>
+											<span class="caption-subject font-green-sharp bold uppercase">Dogs</span>
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse" data-original-title="" title="">
+											</a>
+											<a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title="">
+											</a>
+											<a href="javascript:;" class="reload" data-original-title="" title="">
+											</a>
+										</div>
+									</div>
+									<!-- {% if dog_data_list %}
+										{% for dog in dog_data_list %}
+											{{dog.0}}&nbsp;{{dog.1}}&nbsp;{{dog.2}}
+										{% endfor %}
+									{% endif %} -->
+									
+									{% if dog_data_list %}
+										<table class="table table-bordered table-advance dog_table" >
+											<thead>
+												<tr class="thead">
+													<td>Mon</td>
+													<td>Tue</td>
+													<td>Wed</td>
+													<td>Thu</td>
+													<td>Fri</td>
+													<td>Sat</td>
+													<td>Sun</td>
+												</tr>
+											</thead>
+											<tbody>
+											 	<tr>
+												{% for i in first_week %}
+													<td></td>
+												{% endfor %}
+											 	{% for dog in dog_data_list %}
+													{% if dog.1|divisibleby:7  %}
+												 		</tr><tr>
+												 		<td><a href="#" class="tablecell"><span>{{dog.0}}</span><br><span>{{dog.2}}&nbsp;dogs</span></a><div class="below_desc"></div></td>
+												 	{% else %}
+												 		<td><a href="#" class="tablecell"><span>{{dog.0}}</span><br><span>{{dog.2}}&nbsp;dogs</span></a><div class="below_desc"></div></td>
+												 	{% endif %}
+												{% endfor %}
+												{% for j in last_week %}
+												 	<td></td>
+												{% endfor %}
+											 </tr>
+											</tbody>
+										</table>
+			            {% endif %}
+									
+								</div>
+								<!-- END SAMPLE TABLE PORTLET-->
+							</div>
+						</div>	
+						
+					</div>
+				</form>
+				<!-- END FORM-->
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block custom_js %}
+<script src="{% static 'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js' %}" type="text/javascript"></script>
+<!-- <script src="{% static 'assets/global/plugins/moment.min.js' %}"></script>
+<script src="{% static 'assets/global/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+<script src="{% static 'assets/global/plugins/Chart.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/pages/scripts/calendar.js' %}"></script> -->
+
+<script>
+	var edit_venu = function(venu_id)
+	{
+		if(venu_id != "")
+			$("#venu_id").val(venu_id);
+
+		$('form').attr("action", "{% url 'venu_save' %}");
+		$('form').submit();
+	}
+	var search = function()
+	{
+		$('form').attr("action", "{% url 'dashboard.index' %}");
+		$('form').attr("method", "POST");
+		$('form').submit();
+	}
+	
+	$(document).ready(function(){
+		$('.date-picker').datepicker({
+        rtl: Metronic.isRTL(),
+        orientation: "left",
+        autoclose: true,
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+    });
+		$(".tablecell").click(function(e){
+			e.preventDefault();
+			var div = $(this).next();
+			var date = $(this).children("span:eq(0)").text();
+			var search_key1 = $('#search_key1').val();
+			var search_key2 = $('#search_key2').val();
+			$.ajax({
+				url:'dog/getdata/',
+				data: {'csrfmiddlewaretoken':"{{ csrf_token }}", date: date, search_key1: search_key1, search_key2: search_key2},
+				dataType: "json",
+				method: "POST",
+			}).done(function(data){
+				div.empty();
+				// for (var i = Object.keys(data).length - 1; i >= 0; i--) {
+				for (var i = 0; i < Object.keys(data).length; i++) {
+					div.append($("<div>"+(i+1)+" : "+data[i]['first_name']+" "+data[i]['last_name']+" "+data[i]['start_date']+" "+data[i]['end_date']+"</div>"));
+				}
+			});
+		});
+	});
+	
+</script>
+
+{% endblock %}

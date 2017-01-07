@@ -1,0 +1,160 @@
+{% extends "static/index.html" %}
+{% load static %}
+{% block content %}
+<div class="row">
+	<div class="col-md-offset-1 col-md-10">
+		<div class="portlet box green">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-gift"></i>Form Sample
+				</div>
+				<div class="tools">
+					<a href="javascript:;" class="collapse" data-original-title="" title="">
+					</a>
+					<a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title="">
+					</a>
+					<a href="javascript:;" class="reload" data-original-title="" title="">
+					</a>
+					<a href="javascript:;" class="remove" data-original-title="" title="">
+					</a>
+				</div>
+			</div>
+			<div class="portlet-body form">
+				<!-- BEGIN FORM-->
+				<form action="#" class="form-horizontal" method="get">
+					{% csrf_token %}
+					<input type="hidden" name="venu_id" id="venu_id" value="">
+					<div class="form-body">
+						<h3 class="form-section">Search Info</h3>
+						<div class="row">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="control-label col-md-3">Venu Name</label>
+										<div class="col-md-9">
+											<input type="text" class="form-control" placeholder="Please input venu name" name="search_key" value="{{search_key}}">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<button type="button" class="btn green" onclick="search()">Search</button>
+									<button type="button" class="btn green" id="reg_venu" onclick="edit_venu('');">Add Venu</button>
+								</div>
+							</div>
+						</div>
+
+						<h3 class="form-section">Venu List</h3>
+						<div class="row">
+							<div class="col-md-12">
+								<!-- BEGIN SAMPLE TABLE PORTLET-->
+								<div class="portlet light">
+									<div class="portlet-title">
+										<div class="caption">
+											<i class="fa fa-cogs font-green-sharp"></i>
+											<span class="caption-subject font-green-sharp bold uppercase">Venus</span>
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse" data-original-title="" title="">
+											</a>
+											<a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title="">
+											</a>
+											<a href="javascript:;" class="reload" data-original-title="" title="">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="table-scrollable">
+											<table class="table table-striped table-bordered table-advance table-hover">
+											<thead>
+											<tr>
+												<th>
+													<i class="fa fa-google-plus"></i> Google Place ID
+												</th>
+												<th class="hidden-xs">
+													<i class="fa fa-user"></i> Name
+												</th>
+												<th>
+													<i class="fa fa-home"></i> Address
+												</th>
+												<th>
+													<i class="fa fa-phone"></i> Phone
+												</th>
+												<th>
+													<i class="fa fa-calendar" aria-hidden="true"></i>Events
+												</th>
+												<th width="50">
+													<i class="fa fa-pencil-square-o"></i> Edit
+												</th>
+												<th width="50">
+													<i class="fa fa-trash-o"></i> Delete
+												</th>
+											</tr>
+											</thead>
+											<tbody>
+											{% if venu_list %}
+											{% for venu in venu_list %}
+							                <tr>
+												<td class="highlight">
+													{{venu.google_place_id}}
+												</td>
+												<td class="hidden-xs">
+													 {{venu.venu_name}}
+												</td>
+												<td>
+													 {{venu.address}}
+												</td>
+												<td>
+													 {{venu.phone}} - {{venu.trading_hours}}
+												</td>
+												<td>
+													 0
+												</td>
+												<td>
+													<a href="javascript:edit_venu('{{venu.id}}')" class="btn default btn-xs purple">
+													<i class="fa fa-edit"></i>Edit </a>
+												</td>
+												<td>
+													<a href="{% url 'venu_delete' venu.id %}" class="btn default btn-xs black">
+													<i class="fa fa-trash-o"></i> Delete </a>
+												</td>
+											</tr>
+							                {% endfor %}
+							                {% endif %}
+											</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<!-- END SAMPLE TABLE PORTLET-->
+							</div>
+						</div>	
+						
+					</div>
+				</form>
+				<!-- END FORM-->
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block custom_js %}
+<script>
+	var edit_venu = function(venu_id)
+	{
+		if(venu_id != "")
+			$("#venu_id").val(venu_id);
+
+		$('form').attr("action", "{% url 'venu_save' %}");
+		$('form').submit();
+	}
+
+	var search = function()
+	{
+		$('form').attr("action", "{% url 'dashboard.index' %}");
+		$('form').attr("method", "POST");
+		$('form').submit();
+	}
+
+</script>
+
+{% endblock %}
